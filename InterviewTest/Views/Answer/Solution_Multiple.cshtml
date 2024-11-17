@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "Solution_Multiple";
+}
+
+<style>
+    .selectArea {
+        background-color: lightgray;
+    }
+
+    .cityBlock {
+        height: 50px;
+        width: 100px;
+        background-color: white;
+        cursor: pointer;
+    }
+
+        .cityBlock:hover {
+            transform: scale(1.05);
+        }
+
+    .isSelected {
+        background-color: cornflowerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+<h2>地區選擇</h2>
+
+<div id="app">
+
+    <button class="btn btn-secondary mt-3 mb-3" v-on:click="getSelect=!getSelect">新增地區</button>
+
+    <div class="p-3 mt-3 selectArea rounded" v-if="getSelect">
+        <h4 class="mb-3 ps-2">請選擇地區</h4>
+        <div class="d-flex">
+            <div :class="['cityBlock rounded fw-bolder text-center p-2 m-2 align-content-center', {'isSelected':city.selected}]"
+                 v-on:click="selectCity(city.id)"
+                 v-for="city in cities"
+                 :key="city.id">{{city.name}}</div>
+        </div>
+
+    </div>
+
+    <div class="p-3 mt-3 border" v-if="cities.some(city=>city.selected)">
+        <h4 class="mb-3">已選擇地區</h4>
+        <h6 v-for="city in cities" :key="city.id" v-show="city.selected" class="mb-3">
+            <button class="btn btn-sm btn-danger me-3" v-on:click="city.selected=!city.selected">X</button> {{city.name}}<br />
+        </h6>
+    </div>
+
+</div>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue;
+        const config = {
+            setup() {
+                const cities = ref([
+                    { id: 1, name: "台北市", selected: false },
+                    { id: 2, name: "新北市", selected: false },
+                    { id: 3, name: "基隆市", selected: false },
+                    { id: 4, name: "桃園市", selected: false }]
+                );
+
+                const getSelect = ref(false)
+
+                const selectCity = (id) => {
+                    const city = cities.value.find(city => city.id === id)
+                    if (city) {
+                        city.selected = !city.selected;
+                    }
+                }
+
+                return { cities, getSelect, selectCity };
+            }
+        }
+        const app = createApp(config);
+        app.mount("#app")
+    </script>
+}
+
+

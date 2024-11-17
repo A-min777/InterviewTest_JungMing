@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Solution_Vue";
+}
+
+
+<h2>地區選擇</h2>
+
+<div id="app">
+
+    <button class="btn btn-secondary mt-3 mb-3" v-on:click="getSelect=!getSelect">新增地區</button>
+
+    <div>
+        <select v-model="selectedCity" v-on:change="selectCity" v-show="getSelect">
+            <option v-for="city in cities" :key="city.id">
+                {{city.name}}
+            </option>
+        </select>
+    </div>
+
+    <div class="p-3 mt-3 border" v-if="cities.some(city=>city.selected)">
+        <h4 class="mb-3">已選擇地區</h4>
+        <h6 v-for="city in cities" :key="city.id" v-show="city.selected" class="mb-3">
+            <button class="btn btn-sm btn-danger" v-on:click="city.selected=!city.selected">X</button> {{city.name}}<br />
+        </h6>
+    </div>
+
+</div>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue;
+        const config = {
+            setup() {
+                const cities = ref([
+                    { id: 0, name: "請選擇",  },
+                    { id: 1, name: "台北市", selected: false },
+                    { id: 2, name: "新北市", selected: false },
+                    { id: 3, name: "基隆市", selected: false },
+                    { id: 4, name: "桃園市", selected: false }]
+                );
+
+                const getSelect = ref(false)
+                const selectedCity = ref("請選擇");
+
+                const selectCity = () => {
+                    const city = cities.value.find(city => city.name === selectedCity.value)
+                    if (city && city.id!=0) {
+                        city.selected = true;
+                    }
+                }
+                return { cities, selectedCity, selectCity, getSelect };
+            }
+        }
+        const app = createApp(config);
+        app.mount("#app")
+    </script>
+}
+
+
+

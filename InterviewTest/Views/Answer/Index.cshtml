@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    #cityBtn,#citiesSele {
+        margin: 20px 0 20px 0;
+    }
+
+    #cityBtn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        background-color: gray;
+        color:white;
+    }
+    .deleteBtn {
+        border-radius: 5px;
+        border: none;
+        background-color: crimson;
+        color: white;
+        margin: 5px
+    }
+
+    #choosedCity{
+        border:1px solid black;
+        padding:20px;
+    }
+</style>
+
+<h2>地區選擇</h2>
+
+<button id="cityBtn">新增地區</button>
+<select name="citiesSele" id="citiesSele" style="display:none;"></select>
+<div id="choosedCity" style="display:none;">
+    <h4>已選擇地區</h4>
+</div>
+
+@section scripts{
+    <script>
+        let cities = [
+            {
+                id: 0, name: "請選擇", selected: true,
+            },
+            {
+                id: 1, name: "台北市"
+            },
+            {
+                id: 2, name: "新北市"
+            },
+            {
+                id: 3, name: "基隆市"
+            },
+            {
+                id: 4, name: "桃園市"
+            },]
+
+        let getList = document.getElementById("citiesSele");
+        let choosed = document.getElementById("choosedCity")
+        let selectedCities = new Set();
+
+        cities.forEach((city) => {
+            let option = document.createElement("option");
+            option.value = city.id;
+            option.text = city.name;
+            if (city.selected) {
+                option.selected = true;
+            }
+            getList.appendChild(option);
+        });
+
+        let cityBtn = document.getElementById("cityBtn");
+        cityBtn.addEventListener("click", () => {
+            getList.style.display = (getList.style.display === "none") ? "block" : "none"
+        });
+
+        getList.addEventListener("change", (event) => {
+            let selected = event.target.options[event.target.selectedIndex];
+            let selectedId = selected.value;
+            if (selectedId != 0 && !selectedCities.has(selectedId)) {
+                let newChoice = selected.text;
+                choosed.style.display = "block";
+
+                let newChoicedCity = document.createElement("span");
+                newChoicedCity.textContent = newChoice;
+               
+                let br = document.createElement("br");
+
+                let deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "X";
+                deleteBtn.setAttribute("class", "deleteBtn");
+
+                deleteBtn.addEventListener("click", () => {
+                    choosed.removeChild(newChoicedCity);
+                    choosed.removeChild(deleteBtn);
+                    choosed.removeChild(br);
+                    selectedCities.delete(selectedId);
+
+                    if (selectedCities.size === 0) {
+                        choosed.style.display = "none";
+                    }
+                });
+
+                choosed.appendChild(deleteBtn);
+                choosed.appendChild(newChoicedCity);
+                choosed.appendChild(br)
+                
+
+                selectedCities.add(selectedId);
+            }
+        });
+
+    </script>
+}
+
